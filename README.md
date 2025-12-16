@@ -2,6 +2,8 @@
 
 A small helper extension that takes your labor schedule from ielightning.net and turns it into Outlook calendar events using the Microsoft Graph API.
 
+**Privacy Policy**: [PRIVACY_POLICY.md](PRIVACY_POLICY.md)
+
 ## Features
 
 - Select specific schedule rows to sync
