@@ -21,7 +21,21 @@ chrome.storage.local.get(['clientId'], (result) => {
 
 // Listen for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'getClientId') {
+    sendResponse({ 
+      clientId: CLIENT_ID,
+      isHardcoded: !!HARDCODED_CLIENT_ID,
+      hardcodedClientId: HARDCODED_CLIENT_ID || null
+    });
+    return false;
+  }
+
   if (request.action === 'updateClientId') {
+    // Only allow override if no hardcoded client ID exists
+    if (HARDCODED_CLIENT_ID) {
+      sendResponse({ success: false, error: 'Client ID is hardcoded and cannot be overridden' });
+      return false;
+    }
     CLIENT_ID = request.clientId;
     sendResponse({ success: true });
     return false;

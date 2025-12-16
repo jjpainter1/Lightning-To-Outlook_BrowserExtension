@@ -45,8 +45,9 @@ These steps assume someone has already created and configured the Azure AD app (
 
 1. Click the extension icon in your browser toolbar.
 2. Click **Settings** at the bottom.
-3. Fill out the fields for Initials and Default Reminder values
-4. Click **Save Configuration**.
+3. If the Client ID field is disabled, it means it's hardcoded in the extension and you don't need to enter it.
+4. Fill out the fields for Initials and Default Reminder values
+5. Click **Save Configuration**.
 
 ## Usage
 
@@ -125,10 +126,50 @@ If you’re the one wiring this up for yourself or a team, these are the steps y
 
 The extension uses the Microsoft identity platform v2.0 and the **SPA/implicit flow** via `chrome.identity.launchWebAuthFlow`. You must configure it as a **Single-page application** and allow access tokens (and optionally ID tokens).
 
+**⚠️ Important: Redirect URI Distribution Issue**
+
+When distributing an unpacked extension, each installation gets a unique extension ID, which means each user would have a different redirect URI (e.g., `https://[unique-id].chromiumapp.org/`). This makes it impractical to add each user's redirect URI to Azure AD.
+
+**Solutions:**
+
+#### Option A: Publish to Chrome Web Store (Recommended)
+
+1. **Publish your extension to the Chrome Web Store**
+   - This gives you a **fixed extension ID** that never changes
+   - You only need to add **one redirect URI** to Azure AD
+   - Users can install from the store without developer mode
+
+2. **Get your fixed extension ID**
+   - After publishing, your extension will have a permanent ID
+   - The redirect URI will be: `https://[fixed-extension-id].chromiumapp.org/`
+
+3. **Add the redirect URI to Azure AD**
+   - Go to **Authentication** in your app registration
+   - Under **Platform configurations**, click **Add a platform**
+   - Select **Single-page application**
+   - Add: `https://[fixed-extension-id].chromiumapp.org/`
+   - Under **Implicit grant and hybrid flows**:
+     - Enable **Access tokens**
+     - Optionally enable **ID tokens**
+   - Click **Save**
+
+#### Option B: Use a Custom Redirect Page (Advanced)
+
+If you can't publish to Chrome Web Store, you can set up a redirect page on your own domain:
+
+1. **Create a redirect page** on your domain (e.g., `https://yourdomain.com/oauth-redirect.html`)
+2. **Modify the extension** to use your custom redirect URI instead of `chrome.identity.getRedirectURL()`
+3. **The redirect page** should extract the token from the URL and communicate it back to the extension using `postMessage` or similar
+4. **Add your custom redirect URI** to Azure AD as a Single-page application
+
+**For Development/Testing:**
+
+If you're only testing locally or with a small team:
+
 1. Go to **Authentication** in your app registration.
 2. Under **Platform configurations**, click **Add a platform**.
 3. Select **Single-page application**.
-4. In **Redirect URIs**, add the redirect URI shown in the extension’s **Settings** page:
+4. In **Redirect URIs**, add the redirect URI shown in the extension's **Settings** page:
    - It will look like: `https://[extension-id].chromiumapp.org/`.
    - You can copy it directly from the Options page after loading the extension.
 5. Under **Implicit grant and hybrid flows** (inside the SPA configuration):

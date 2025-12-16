@@ -9,16 +9,41 @@ document.addEventListener('DOMContentLoaded', async () => {
   const mappingsStatus = document.getElementById('mappings-status');
   const initialsInput = document.getElementById('initials');
   const defaultReminderInput = document.getElementById('default-reminder');
+  const clientIdInfo = document.getElementById('client-id-info');
 
   // Get redirect URI
   const redirectUri = chrome.identity.getRedirectURL();
   redirectUriInput.value = redirectUri;
 
+  // Check if client ID is hardcoded in background script
+  let isHardcoded = false;
+  let hardcodedClientId = null;
+  try {
+    const clientIdResponse = await chrome.runtime.sendMessage({ action: 'getClientId' });
+    if (clientIdResponse && clientIdResponse.isHardcoded) {
+      isHardcoded = true;
+      hardcodedClientId = clientIdResponse.hardcodedClientId;
+      clientIdInput.value = hardcodedClientId;
+      clientIdInput.readOnly = true;
+      clientIdInput.disabled = true;
+      if (clientIdInfo) {
+        clientIdInfo.textContent = 'Client ID is hardcoded in the extension. This field cannot be changed.';
+        clientIdInfo.classList.remove('hidden');
+      }
+    }
+  } catch (error) {
+    console.error('Error checking client ID:', error);
+  }
+
   // Load saved settings
   const stored = await chrome.storage.local.get(['clientId', 'initials', 'defaultReminderMinutes']);
-  if (stored.clientId) {
+  
+  // Only load client ID from storage if not hardcoded
+  if (!isHardcoded && stored.clientId) {
     clientIdInput.value = stored.clientId;
   }
+  
+  // Load user preferences (always load these)
   if (stored.initials) {
     initialsInput.value = stored.initials;
   }
@@ -28,18 +53,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Save configuration & preferences
   saveBtn.addEventListener('click', async () => {
-    const clientId = clientIdInput.value.trim();
-    
-    if (!clientId) {
-      showStatus(saveStatus, 'Please enter a Client ID', 'error');
-      return;
-    }
+    // Only validate client ID if it's not hardcoded
+    if (!isHardcoded) {
+      const clientId = clientIdInput.value.trim();
+      
+      if (!clientId) {
+        showStatus(saveStatus, 'Please enter a Client ID', 'error');
+        return;
+      }
 
-    // Validate UUID format (Azure AD Client IDs are UUIDs)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(clientId)) {
-      showStatus(saveStatus, 'Client ID should be a valid UUID format', 'error');
-      return;
+      // Validate UUID format (Azure AD Client IDs are UUIDs)
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(clientId)) {
+        showStatus(saveStatus, 'Client ID should be a valid UUID format', 'error');
+        return;
+      }
+
+      // Save client ID (only if not hardcoded)
+      await chrome.storage.local.set({ clientId: clientId });
+      
+      // Update background script
+      const updateResponse = await chrome.runtime.sendMessage({ action: 'updateClientId', clientId: clientId });
+      if (!updateResponse || !updateResponse.success) {
+        showStatus(saveStatus, updateResponse?.error || 'Failed to update Client ID', 'error');
+        return;
+      }
     }
 
     // Read preferences
@@ -55,14 +93,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       defaultReminderMinutes = parsed;
     }
 
+    // Save user preferences (always save these)
     await chrome.storage.local.set({
-      clientId: clientId,
       initials: initials,
       defaultReminderMinutes: defaultReminderMinutes
     });
-    
-    // Update background script
-    chrome.runtime.sendMessage({ action: 'updateClientId', clientId: clientId });
     
     showStatus(saveStatus, 'Configuration saved successfully!', 'success');
   });

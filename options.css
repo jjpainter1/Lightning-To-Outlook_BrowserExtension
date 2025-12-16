@@ -82,9 +82,11 @@ body {
   font-family: monospace;
 }
 
-.form-group input[readonly] {
+.form-group input[readonly],
+.form-group input[disabled] {
   background: #f5f5f5;
   color: #666;
+  cursor: not-allowed;
 }
 
 .form-group small {

@@ -25,15 +25,24 @@
       
       <div class="form-group">
         <label for="client-id">Client ID (Application ID):</label>
-        <input type="text" id="client-id" placeholder="Enter your Azure AD Client ID (optional override)" />
-        <small>If a Client ID is hard-coded in the extension, you can leave this blank. Otherwise,
+        <input type="text" id="client-id" placeholder="Enter your Azure AD Client ID" />
+        <small id="client-id-info" class="hidden" style="display: block; color: #666; font-style: italic; margin-top: 4px;"></small>
+        <small>If a Client ID is hard-coded in the extension, this field will be disabled and show the hardcoded value. Otherwise,
         enter the Client ID from your Azure AD app registration.</small>
       </div>
 
       <div class="form-group">
         <label for="redirect-uri">Redirect URI (for reference):</label>
         <input type="text" id="redirect-uri" readonly />
-        <small>Add this exact URI to your Azure AD app's redirect URIs</small>
+        <small>
+          <strong>Important:</strong> This redirect URI is unique to your extension installation. 
+          If you're distributing this extension, you have two options:
+          <ol style="margin-top: 8px; margin-left: 20px;">
+            <li><strong>Publish to Chrome Web Store</strong> (Recommended) - This gives you a fixed extension ID, so you only need to add one redirect URI to Azure AD.</li>
+            <li><strong>Use a custom redirect page</strong> - Set up a redirect page on your own domain that communicates back to the extension. See README.md for details.</li>
+          </ol>
+          For development/testing, add this exact URI to your Azure AD app's redirect URIs as a Single-page application.
+        </small>
       </div>
 
       <div class="info-box">
@@ -82,7 +91,7 @@
     <div class="section">
       <h2>About</h2>
       <p class="description">
-        Version 0.1.0 - Proof of Concept<br>
+        Version 0.2.0<br>
         This extension syncs labor schedule items from ielightning.net to your Outlook calendar.
       </p>
     </div>
