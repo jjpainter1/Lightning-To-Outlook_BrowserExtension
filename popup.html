@@ -59,7 +59,10 @@
       </div>
       <div id="schedule-info">
         <p class="info-text">Select rows on the schedule page, then click below to sync.</p>
-        <button id="get-rows-btn" class="btn btn-secondary">Get Selected Rows</button>
+        <button id="get-rows-btn" class="btn btn-secondary">
+          <span id="get-rows-btn-text">Get Selected Rows</span>
+          <span id="get-rows-spinner" class="spinner hidden"></span>
+        </button>
         <div id="rows-preview" class="rows-preview hidden"></div>
         <div id="diff-preview" class="diff-preview hidden"></div>
       </div>

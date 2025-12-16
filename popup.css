@@ -347,6 +347,11 @@ body.dark .diff-item {
   color: #d0d0d0;
 }
 
+body.dark .btn-secondary .spinner {
+  border-color: #ccc;
+  border-top-color: transparent;
+}
+
 .spinner {
   display: inline-block;
   width: 14px;
@@ -355,6 +360,13 @@ body.dark .diff-item {
   border-top-color: transparent;
   border-radius: 50%;
   margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* Spinner for secondary buttons (darker border) */
+.btn-secondary .spinner {
+  border-color: #666;
+  border-top-color: transparent;
 }
 
 .spinner.active {

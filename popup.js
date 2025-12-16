@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const optionsLink = document.getElementById('options-link');
   const darkModeToggle = document.getElementById('dark-mode-toggle');
   const syncSpinner = document.getElementById('sync-spinner');
+  const getRowsSpinner = document.getElementById('get-rows-spinner');
+  const getRowsBtnText = document.getElementById('get-rows-btn-text');
 
   let selectedRows = [];
   let accessToken = null;
@@ -185,6 +187,16 @@ document.addEventListener('DOMContentLoaded', async () => {
    */
   async function handleGetRows() {
     try {
+      // Disable button and show loading spinner
+      getRowsBtn.disabled = true;
+      if (getRowsBtnText) {
+        getRowsBtnText.textContent = 'Getting rows...';
+      }
+      if (getRowsSpinner) {
+        getRowsSpinner.classList.remove('hidden');
+        getRowsSpinner.classList.add('active');
+      }
+
       // Get active tab
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       
@@ -219,6 +231,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
       console.error('Error getting rows:', error);
       showStatus(`Error: ${error.message}`, 'error');
+    } finally {
+      // Re-enable button and hide spinner
+      getRowsBtn.disabled = false;
+      if (getRowsBtnText) {
+        getRowsBtnText.textContent = 'Get Selected Rows';
+      }
+      if (getRowsSpinner) {
+        getRowsSpinner.classList.add('hidden');
+        getRowsSpinner.classList.remove('active');
+      }
     }
   }
 
