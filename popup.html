@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lightning to Outlook</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ Lightning → Outlook</h1>
+      <p class="subtitle">Sync selected schedule items to your calendar</p>
+    </div>
+
+    <div id="status" class="status hidden"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Authentication</h2>
+      </div>
+      <div id="auth-section">
+        <button id="login-btn" class="btn btn-primary">Sign in with Microsoft</button>
+        <div id="auth-status" class="auth-status hidden"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Calendar Selection</h2>
+      </div>
+      <div id="calendar-section">
+        <select id="calendar-select" class="select" disabled>
+          <option value="">Loading calendars...</option>
+        </select>
+        <button id="refresh-calendars-btn" class="btn btn-secondary" disabled>Refresh</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <h2>Sync Options</h2>
+      </div>
+      <div class="options">
+        <label class="checkbox-label">
+          <input type="checkbox" id="update-existing" checked>
+          <span>Update existing events</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="dark-mode-toggle">
+          <span>Dark mode</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section schedule-section">
+      <div class="section-header">
+        <h2>Schedule Data</h2>
+      </div>
+      <div id="schedule-info">
+        <p class="info-text">Select rows on the schedule page, then click below to sync.</p>
+        <button id="get-rows-btn" class="btn btn-secondary">Get Selected Rows</button>
+        <div id="rows-preview" class="rows-preview hidden"></div>
+        <div id="diff-preview" class="diff-preview hidden"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <button id="sync-btn" class="btn btn-primary btn-large" disabled>
+        <span id="sync-btn-text">Sync to Outlook</span>
+        <span id="sync-spinner" class="spinner hidden"></span>
+      </button>
+    </div>
+
+    <div class="footer">
+      <a href="#" id="options-link">Settings</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+

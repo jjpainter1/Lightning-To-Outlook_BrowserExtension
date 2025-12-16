@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Icon Generator</title>
+</head>
+<body>
+  <h1>Icon Generator for Extension</h1>
+  <p>This page will generate placeholder icons for the extension.</p>
+  <canvas id="icon16" width="16" height="16"></canvas>
+  <canvas id="icon48" width="48" height="48"></canvas>
+  <canvas id="icon128" width="128" height="128"></canvas>
+  
+  <div style="margin-top: 20px;">
+    <button onclick="generateIcons()">Generate Icons</button>
+    <button onclick="downloadAll()">Download All Icons</button>
+  </div>
+
+  <script>
+    function generateIcons() {
+      const sizes = [16, 48, 128];
+      
+      sizes.forEach(size => {
+        const canvas = document.getElementById(`icon${size}`);
+        const ctx = canvas.getContext('2d');
+        
+        // Clear canvas
+        ctx.clearRect(0, 0, size, size);
+        
+        // Background
+        ctx.fillStyle = '#0078d4';
+        ctx.fillRect(0, 0, size, size);
+        
+        // Lightning bolt (simple representation)
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        // Simple lightning shape
+        const scale = size / 128;
+        ctx.moveTo(size * 0.4, size * 0.1);
+        ctx.lineTo(size * 0.5, size * 0.4);
+        ctx.lineTo(size * 0.35, size * 0.4);
+        ctx.lineTo(size * 0.45, size * 0.7);
+        ctx.lineTo(size * 0.6, size * 0.3);
+        ctx.lineTo(size * 0.5, size * 0.3);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Calendar icon (simple square)
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = Math.max(1, size / 32);
+        ctx.strokeRect(size * 0.2, size * 0.6, size * 0.6, size * 0.3);
+      });
+    }
+
+    function downloadCanvas(canvas, filename) {
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function downloadAll() {
+      generateIcons();
+      setTimeout(() => {
+        downloadCanvas(document.getElementById('icon16'), 'icon16.png');
+        setTimeout(() => {
+          downloadCanvas(document.getElementById('icon48'), 'icon48.png');
+          setTimeout(() => {
+            downloadCanvas(document.getElementById('icon128'), 'icon128.png');
+            alert('All icons downloaded! Move them to the icons/ folder.');
+          }, 500);
+        }, 500);
+      }, 500);
+    }
+
+    // Auto-generate on load
+    window.onload = generateIcons;
+  </script>
+</body>
+</html>
+

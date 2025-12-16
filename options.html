@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lightning to Outlook - Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⚡ Lightning → Outlook Settings</h1>
+    </div>
+
+    <div class="section">
+      <h2>Azure AD Application Configuration</h2>
+      <p class="description">
+        To use this extension, an Azure AD application must exist. In most cases your admin or
+        developer will have already set this up and hard-coded the Client ID into the extension.
+        You only need to change these values if you're developing or testing.
+        <a href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">
+          Register an app in Azure Portal
+        </a>
+      </p>
+      
+      <div class="form-group">
+        <label for="client-id">Client ID (Application ID):</label>
+        <input type="text" id="client-id" placeholder="Enter your Azure AD Client ID (optional override)" />
+        <small>If a Client ID is hard-coded in the extension, you can leave this blank. Otherwise,
+        enter the Client ID from your Azure AD app registration.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="redirect-uri">Redirect URI (for reference):</label>
+        <input type="text" id="redirect-uri" readonly />
+        <small>Add this exact URI to your Azure AD app's redirect URIs</small>
+      </div>
+
+      <div class="info-box">
+        <h3>Required Azure AD App Permissions:</h3>
+        <ul>
+          <li><strong>Calendars.ReadWrite</strong> - Microsoft Graph API (Delegated)</li>
+          <li><strong>User.Read</strong> - Microsoft Graph API (Delegated)</li>
+        </ul>
+        <p>Make sure to grant admin consent for these permissions in your Azure AD tenant.</p>
+      </div>
+
+      <button id="save-btn" class="btn btn-primary">Save Configuration</button>
+      <div id="save-status" class="status hidden"></div>
+    </div>
+
+    <div class="section">
+      <h2>User Preferences</h2>
+      <p class="description">
+        Configure how events are created in Outlook. These settings are stored locally and persist across browser restarts.
+      </p>
+
+      <div class="form-group">
+        <label for="initials">Initials (prefix for event titles):</label>
+        <input type="text" id="initials" placeholder="e.g. JJ" maxlength="10" />
+        <small>These initials will be added to the beginning of each event title, e.g. <strong>JJ - Job Name</strong>.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="default-reminder">Default Reminder in Minutes (1440 minutes = 1 day):</label>
+        <input type="number" id="default-reminder" min="0" step="5" placeholder="Leave blank to use Outlook default" />
+        <small>
+          Set a custom reminder time for events created by this extension. Leave empty to use your Outlook calendar's default reminder.
+        </small>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Event Mappings</h2>
+      <p class="description">
+        This extension stores mappings between schedule Ref # and Outlook event IDs to enable updates.
+      </p>
+      <button id="clear-mappings-btn" class="btn btn-secondary">Clear Event Mappings</button>
+      <div id="mappings-status" class="status hidden"></div>
+    </div>
+
+    <div class="section">
+      <h2>About</h2>
+      <p class="description">
+        Version 0.1.0 - Proof of Concept<br>
+        This extension syncs labor schedule items from ielightning.net to your Outlook calendar.
+      </p>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Lightning Schedule to Outlook",
+  "version": "0.1.0",
+  "description": "Sync labor schedule from ielightning.net to Outlook calendar",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://prestigeav.ielightning.net/*",
+    "https://graph.microsoft.com/*",
+    "https://login.microsoftonline.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://prestigeav.ielightning.net/reports/general/mySchedule*",
+        "https://prestigeav.ielightning.net/laborSchedule*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://prestigeav.ielightning.net/*"]
+    }
+  ]
+}
+
